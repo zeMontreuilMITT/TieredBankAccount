@@ -17,10 +17,12 @@ namespace TieredBankAccount.Controllers
     public class CustomersController : Controller
     {
         private readonly AccountBusinessLogic _accountBusinessLogic;
+        private readonly CustomerBusinessLogic _customerBusinessLogic;
 
-        public CustomersController(IRepository<BankAccount> bankRepository)
+        public CustomersController(IRepository<BankAccount> accountRepo, IRepository<Customer> customerRepo)
         {
-            _accountBusinessLogic = new AccountBusinessLogic(bankRepository);
+            _accountBusinessLogic = new AccountBusinessLogic(accountRepo);
+            _customerBusinessLogic = new CustomerBusinessLogic(customerRepo, accountRepo);
         }
         
         // GET: Addresses, Customers, CustomerAddresses
