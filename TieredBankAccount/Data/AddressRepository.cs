@@ -27,6 +27,7 @@ namespace TieredBankAccount.Data
 
         public ICollection<Address> GetAll()
         {
+
             throw new NotImplementedException();
         }
 

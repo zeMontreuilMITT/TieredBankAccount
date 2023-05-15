@@ -13,8 +13,14 @@ namespace TieredBankAccount.Data
             : base(options)
         {
         }
+        
+        public TieredBankAccountContext(): base()
+        {
 
-        public DbSet<TieredBankAccount.Models.Customer> Customer { get; set; } = default!;
-        public DbSet<BankAccount> BankAccounts { get; set; } = default!; 
+        }
+
+
+        public virtual DbSet<TieredBankAccount.Models.Customer> Customer { get; set; } = default!;
+        public virtual DbSet<BankAccount> BankAccounts { get; set; } = default!; 
     }
 }

@@ -29,7 +29,12 @@ namespace TieredBankAccount.Data
 
         public Customer? Get(int? id)
         {
-            return _context.Customer.Find(id);
+            if(id == null)
+            {
+                throw new ArgumentNullException();
+            }
+
+            return _context.Customer.First(c => c.Id == id);
         }
 
         public void Update(Customer entity)

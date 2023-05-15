@@ -6,11 +6,22 @@ namespace TieredBankAccount.BLL
     public class CustomerBusinessLogic
     {
         private IRepository<Customer> _customerRepo;
-        private IRepository<BankAccount> _accountRepo;
-        public CustomerBusinessLogic(IRepository<Customer> customerRepo, IRepository<BankAccount> accountRepo) {
+
+        public CustomerBusinessLogic(IRepository<Customer> customerRepo)
+        {
             _customerRepo = customerRepo;
-            _accountRepo = accountRepo;
         }
+
+        public Customer GetCustomer(int? customerId)
+        {
+            return _customerRepo.Get(customerId);
+        }
+
+        public ICollection<BankAccount> GetAllCustomerAccounts(int? customerId)
+        {
+            return new List<BankAccount>();
+        }
+
 
     }
 }

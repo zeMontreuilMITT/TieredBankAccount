@@ -6,5 +6,12 @@
         public string FullName { get; set; }
         public HashSet<BankAccount> Accounts { get; set; } = new HashSet<BankAccount>();
         public HashSet<CustomerAddress> CustomerAddresses { get; set; } = new HashSet<CustomerAddress>();
+
+        public Customer() { }
+
+        public Customer(string name)
+        {
+            FullName = name;
+        }
     }
 }
