@@ -8,7 +8,7 @@ using System.Net.Sockets;
 namespace TieredArchitectureUnitTests
 {
     [TestClass]
-    public class UnitTest1
+    public class CustomerUnitTests
     {
         public CustomerBusinessLogic customerBusinessLogic { get; set; }
         public IQueryable<Customer> data { get; set; }

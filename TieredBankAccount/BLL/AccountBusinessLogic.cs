@@ -21,8 +21,6 @@ namespace TieredBankAccount.BLL
             {
                 BankAccount account = _accountRepository.Get(accountId);
 
-
-
                 if (account != null)
                 {
                     return account;
@@ -44,7 +42,10 @@ namespace TieredBankAccount.BLL
             {
                 if(amount > account.Balance)
                 {
-                    throw new Exception("Withdrawal amount cannot exceed account balance.");
+                    throw new InvalidOperationException("Withdrawal amount cannot exceed account balance.");
+                } else if (amount <= 0)
+                {
+                    throw new ArgumentOutOfRangeException("Withdrawal amount must exceed 0");
                 } else
                 {
                     account.Balance -= amount;
@@ -53,7 +54,7 @@ namespace TieredBankAccount.BLL
             }
             else
             {
-                throw new Exception("Selected account is not active.");
+                throw new InvalidOperationException("Selected account is not active.");
             }
         }
     }

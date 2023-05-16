@@ -4,6 +4,10 @@ namespace TieredBankAccount.Data
 {
     public class BankAccountRepository : IRepository<BankAccount>
     {
+        private TieredBankAccountContext _context;
+        public BankAccountRepository(TieredBankAccountContext context) {
+            _context = context;
+        }
         public void Create(BankAccount entity)
         {
             throw new NotImplementedException();
@@ -16,7 +20,7 @@ namespace TieredBankAccount.Data
 
         public BankAccount? Get(int? id)
         {
-            throw new NotImplementedException();
+            return _context.BankAccounts.FirstOrDefault(ba => ba.Id == id);
         }
 
         public ICollection<BankAccount> GetAll()
@@ -26,7 +30,8 @@ namespace TieredBankAccount.Data
 
         public void Update(BankAccount entity)
         {
-            throw new NotImplementedException();
+            _context.Update(entity);
+            _context.SaveChanges();
         }
     }
 }

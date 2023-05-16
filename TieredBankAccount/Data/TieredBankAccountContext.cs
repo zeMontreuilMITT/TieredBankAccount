@@ -13,8 +13,8 @@ namespace TieredBankAccount.Data
             : base(options)
         {
         }
-        
-        public TieredBankAccountContext(): base()
+
+        public TieredBankAccountContext() : base()
         {
 
         }
