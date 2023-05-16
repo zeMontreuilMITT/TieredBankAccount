@@ -13,6 +13,9 @@ namespace TieredArchitectureUnitTests
         public CustomerBusinessLogic customerBusinessLogic { get; set; }
         public IQueryable<Customer> data { get; set; }
 
+
+
+
         [TestInitialize]
         public void Initialize()
         {

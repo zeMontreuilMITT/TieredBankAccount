@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Microsoft.EntityFrameworkCore;
 using Moq;
 using System;
 using System.Collections.Generic;
@@ -16,6 +17,29 @@ namespace TieredArchitectureUnitTests
     {
         public AccountBusinessLogic AccountBusinessLogic { get; set; }
         public IQueryable<BankAccount> data { get; set; }
+
+        public static IEnumerable<object[]> DataArgumentLessThanBalance
+        {
+            get
+            {
+                return new[]{
+                    new object[]{1, 24.55M, 25.45M},
+                    new object[]{2, 5M, 0M}
+                };
+            }
+        }
+
+        public static IEnumerable<object[]> DataArgumentExceedsBalance
+        {
+            get
+            {
+                return new[]{
+                    new object[]{1, 55M},
+                    new object[]{2, 6M}
+                };
+            }
+        }
+
 
         [TestInitialize]
         public void Initialize()
@@ -42,13 +66,10 @@ namespace TieredArchitectureUnitTests
         }
 
         [TestMethod]
-        public void Withdraw_SubtractsArgumentFromBalance()
+        [DynamicData(nameof(DataArgumentLessThanBalance))]
+        public void Withdraw_ArgumentGreaterThanZeroLessThanBalance_SubtractsFromBalance(int accountId, decimal withdrawalAmount, decimal expectedResult)
         {
-            int accountId = 1;
-            decimal withdrawalAmount = 25;
             BankAccount actualAccount = data.First(a => a.Id == accountId);
-            decimal expectedResult = actualAccount.Balance - withdrawalAmount;
-
             // act
             AccountBusinessLogic.Withdraw(withdrawalAmount, accountId);
 
@@ -56,17 +77,16 @@ namespace TieredArchitectureUnitTests
         }
 
         [TestMethod]
-        public void Withdraw_ThrowsInvalidOperationIfArgumentExceedsBalance()
+        [DynamicData(nameof(DataArgumentExceedsBalance))]
+        public void Withdraw_ArgumentExceedsBalance_ThrowsInvalidOperation(int accountId, decimal withdrawalAmount)
         {
-            int accountId = 1;
             BankAccount actualAccount = data.First(a => a.Id == accountId);
-            decimal withdrawalAmount = actualAccount.Balance + 1;
 
             Assert.ThrowsException<InvalidOperationException>(() => AccountBusinessLogic.Withdraw(withdrawalAmount, accountId));
         }
 
         [TestMethod]
-        public void Withdraw_ThrowsArgumentRangeExceptionIfArgZeroOrLess()
+        public void Withdraw_ArgumentZeroOrLess_ThrowsArgumentRangeException()
         {
             int accountId = 1;
             BankAccount actualAccount = data.First(a => a.Id == accountId);
@@ -76,7 +96,7 @@ namespace TieredArchitectureUnitTests
         }
 
         [TestMethod]
-        public void Withdraw_ThrowsKeyNotFoundExceptionIfAccountNotFound()
+        public void Withdraw_AccountNotFound_ThrowsKeyNotFound()
         {
             int accountId = int.MaxValue;
             decimal withdrawalAmount = 1;
@@ -86,7 +106,7 @@ namespace TieredArchitectureUnitTests
         }
 
         [TestMethod]
-        public void Withdraw_ThrowsInvalidOperationIfAccountInactive()
+        public void Withdraw_AccountInactive_ThrowsInvalidOperation()
         {
             BankAccount inactiveAccount = data.First(a => !a.IsActive);
             int accountId = inactiveAccount.Id;
