@@ -16,7 +16,7 @@ namespace TieredArchitectureUnitTests
     public class AccountUnitTests
     {
         public AccountBusinessLogic AccountBusinessLogic { get; set; }
-        public IQueryable<BankAccount> data { get; set; }
+        public List<BankAccount> data { get; set; }
 
         public static IEnumerable<object[]> DataArgumentLessThanBalance
         {
@@ -51,18 +51,24 @@ namespace TieredArchitectureUnitTests
                 new BankAccount{Id = 1, Balance = 50, IsActive = true },
                 new BankAccount{Id = 2, Balance = 5, IsActive = true},
                 new BankAccount{Id = 3, Balance = 500, IsActive = false }
-            }.AsQueryable();
-
-            mockAccountDbSet.As<IQueryable<BankAccount>>().Setup(m => m.Provider).Returns(data.Provider);
-            mockAccountDbSet.As<IQueryable<BankAccount>>().Setup(m => m.Expression).Returns(data.Expression);
-            mockAccountDbSet.As<IQueryable<BankAccount>>().Setup(m => m.ElementType).Returns(data.ElementType);
-            mockAccountDbSet.As<IQueryable<BankAccount>>().Setup(m => m.GetEnumerator()).Returns(data.GetEnumerator());
+            };
+            
+            mockAccountDbSet.As<IQueryable<BankAccount>>().Setup(m => m.Provider).Returns(data.AsQueryable().Provider);
+            mockAccountDbSet.As<IQueryable<BankAccount>>().Setup(m => m.Expression).Returns(data.AsQueryable().Expression);
+            mockAccountDbSet.As<IQueryable<BankAccount>>().Setup(m => m.ElementType).Returns(data.AsQueryable().ElementType);
+            mockAccountDbSet.As<IQueryable<BankAccount>>().Setup(m => m.GetEnumerator()).Returns(data.AsQueryable().GetEnumerator());
+      
 
             Mock<TieredBankAccountContext> mockContext = new Mock<TieredBankAccountContext>();
 
+
             mockContext.Setup(c => c.BankAccounts).Returns(mockAccountDbSet.Object);
+            
 
             AccountBusinessLogic = new AccountBusinessLogic(new BankAccountRepository(mockContext.Object));
+
+
+           
         }
 
         [TestMethod]
@@ -113,6 +119,18 @@ namespace TieredArchitectureUnitTests
             decimal withdrawalAmount = 1;
 
             Assert.ThrowsException<InvalidOperationException>(() => AccountBusinessLogic.Withdraw(withdrawalAmount, accountId));
+        }
+
+        [TestMethod]
+        public void Delete_RemovesAccount()
+        {
+            int initialCount = data.Count();
+            BankAccount account = AccountBusinessLogic.GetBankAccount(1);
+
+            AccountBusinessLogic.DeleteAccount(account);
+
+            Assert.AreEqual(initialCount - 1, data.Count);
+
         }
     }
 }

@@ -22,5 +22,10 @@ namespace TieredBankAccount.Data
 
         public virtual DbSet<TieredBankAccount.Models.Customer> Customer { get; set; } = default!;
         public virtual DbSet<BankAccount> BankAccounts { get; set; } = default!; 
+
+        public virtual void DeleteCustomer(Customer customer)
+        {
+            Customer.Remove(customer);
+        }
     }
 }
