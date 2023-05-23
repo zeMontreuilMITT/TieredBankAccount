@@ -11,7 +11,7 @@ namespace TieredArchitectureUnitTests
     public class CustomerUnitTests
     {
         public CustomerBusinessLogic customerBusinessLogic { get; set; }
-        public IQueryable<Customer> data { get; set; }
+        public List<Customer> data { get; set; }
 
 
 
@@ -25,22 +25,26 @@ namespace TieredArchitectureUnitTests
                 new Customer{FullName = "Archie", Id = 2},
                 new Customer{FullName = "Tuna", Id = 3},
                 new Customer{FullName = "Freya", Id = 4},
-                new Customer{FullName = "Oz", Id = 5 } }.AsQueryable();
+                new Customer{FullName = "Oz", Id = 5 } };
 
             // creat a mock of the customer dbset
             Mock<DbSet<Customer>> mockCustomerSet = new Mock<DbSet<Customer>>();
 
             // provide data to mock DbSet
-            mockCustomerSet.As<IQueryable<Customer>>().Setup(m => m.Provider).Returns(data.Provider);
-            mockCustomerSet.As<IQueryable<Customer>>().Setup(m => m.Expression).Returns(data.Expression);
-            mockCustomerSet.As<IQueryable<Customer>>().Setup(m => m.ElementType).Returns(data.ElementType);
+            mockCustomerSet.As<IQueryable<Customer>>().Setup(m => m.Provider).Returns(data.AsQueryable().Provider);
+            mockCustomerSet.As<IQueryable<Customer>>().Setup(m => m.Expression).Returns(data.AsQueryable().Expression);
+            mockCustomerSet.As<IQueryable<Customer>>().Setup(m => m.ElementType).Returns(data.AsQueryable().ElementType);
             mockCustomerSet.As<IQueryable<Customer>>().Setup(m => m.GetEnumerator()).Returns(data.GetEnumerator());
+
+            //mockContext.Setup(a => a.DeleteStuff(It.IsAny<BankAccount>())).Callback<BankAccount>(a => data.Remove(a));
 
             // create a mock of the database context
             Mock<TieredBankAccountContext> mockContext = new Mock<TieredBankAccountContext>();
 
             // setup the mocked context customer property to return an object of the mocked customer set
             // properties that are overridden by setud must be virtual
+
+            mockContext.Setup(m => m.DeleteCustomer(It.IsAny<Customer>())).Callback<Customer>(c => data.Remove(c));
             mockContext.Setup(c => c.Customer).Returns(mockCustomerSet.Object);
 
 

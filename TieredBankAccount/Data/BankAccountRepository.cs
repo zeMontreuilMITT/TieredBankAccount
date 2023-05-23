@@ -13,9 +13,10 @@ namespace TieredBankAccount.Data
             throw new NotImplementedException();
         }
 
-        public void Delete(BankAccount entity)
+        public virtual void Delete(BankAccount entity)
         {
-            throw new NotImplementedException();
+            _context.DeleteStuff(entity);
+            _context.SaveChanges();
         }
 
         public BankAccount? Get(int? id)
@@ -25,7 +26,7 @@ namespace TieredBankAccount.Data
 
         public ICollection<BankAccount> GetAll()
         {
-            throw new NotImplementedException();
+            return _context.BankAccounts.ToHashSet<BankAccount>();
         }
 
         public void Update(BankAccount entity)

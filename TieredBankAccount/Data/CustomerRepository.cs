@@ -19,7 +19,7 @@ namespace TieredBankAccount.Data
 
         public void Delete(Customer entity)
         {
-            throw new NotImplementedException();
+            _context.DeleteCustomer(entity);
         }
 
         public ICollection<Customer> GetAll()

@@ -11,6 +11,10 @@ namespace TieredBankAccount.BLL
             _accountRepository = accountRepository;
         }
 
+        public HashSet<BankAccount> GetAllAccounts()
+        {
+            return _accountRepository.GetAll().ToHashSet();
+        }
         public BankAccount GetBankAccount(int? accountId)
         {
             if (accountId == null)
@@ -56,6 +60,11 @@ namespace TieredBankAccount.BLL
             {
                 throw new InvalidOperationException("Selected account is not active.");
             }
+        }
+
+        public virtual void DeleteAccount(BankAccount account)
+        {
+            _accountRepository.Delete(account);
         }
     }
 }
