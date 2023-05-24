@@ -61,6 +61,10 @@ namespace TieredArchitectureUnitTests
 
             Mock<TieredBankAccountContext> mockContext = new Mock<TieredBankAccountContext>();
 
+<<<<<<< HEAD
+=======
+            mockContext.Setup(a => a.DeleteStuff(It.IsAny<BankAccount>())).Callback<BankAccount>(a => data.Remove(a));
+>>>>>>> 7aacf8f344a28c354eeabb61dd3cf4000d2e9faa
 
             mockContext.Setup(c => c.BankAccounts).Returns(mockAccountDbSet.Object);
             
